@@ -1,0 +1,24 @@
+diff --git a/nanny.c b/nanny.c
+index 0ac5388..e363e0e 100644
+--- a/nanny.c
++++ b/nanny.c
+@@ -1407,7 +1407,7 @@ main (int argc, const char **argv)
+ 	int teststart = 0;
+ 	int interval = 10;
+ 	int port = 80;
+-	int rport = 80;
++	int rport = -1;
+ 	int weight = 1;
+ 	int reentryTime = 0;
+ 	int verbose = 0;
+@@ -1565,6 +1565,10 @@ main (int argc, const char **argv)
+ 		service_type = SERV_LVS;
+ 	}
+ 	
++	if (rport == -1) {
++		rport = port;
++	}
++	
+ 	if (reentryTime == 0) {
+ 		if (service_type == SERV_LVS)
+ 			reentryTime = 180;

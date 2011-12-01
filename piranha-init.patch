@@ -1,0 +1,28 @@
+commit 5bcd95fd9f2a9d8ebcd093f13ab351dd0b4a2885
+Author: Marek 'marx' Grac <mgrac@redhat.com>
+Date:   Wed Jul 14 12:30:18 2010 +0200
+
+    piranha: init script is not work correctly
+
+diff --git a/piranha-gui.init b/piranha-gui.init
+index 5e9ac14..8e2ae75 100755
+--- a/piranha-gui.init
++++ b/piranha-gui.init
+@@ -15,7 +15,7 @@
+ # pidfile: /var/log/piranha/piranha-httpd.pid
+ # config: /etc/sysconfig/ha/conf/httpd.conf
+ 
+-PIDFILE=/var/log/piranha/piranha-httpd.pid
++PIDFILE=/var/run/piranha-httpd.pid
+ 
+ # Source function library.
+ . /etc/rc.d/init.d/functions
+@@ -88,7 +88,7 @@ case "$1" in
+ 	;;
+ 
+   status)
+-	status piranha_gui
++	status -p "$PID_FILE" httpd
+ 	RETVAL=$?
+ 	;;
+ 

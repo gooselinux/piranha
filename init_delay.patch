@@ -1,0 +1,35 @@
+diff --git a/pulse.init b/pulse.init
+index ac2229b..33803f9 100755
+--- a/pulse.init
++++ b/pulse.init
+@@ -35,11 +35,30 @@ if [ ! -f /etc/piranha/lvs.cf ] ; then
+ fi
+ 
+ RETVAL=0
++# DELAYRANGE is set in 1/10 of seconds
++DELAYRANGE=50
++
++function delay {
++	if [ -n "$DELAY" ]; then
++		if [ "random" = "$DELAY" ]; then
++			number=$RANDOM
++			let "number %= $DELAYRANGE"
++			number=`echo $number | sed 's/\(.\)$/.\1/' `
++			DELAY=$number
++		fi
++	else
++		DELAY=0
++	fi
++
++	sleep $DELAY
++}
++
+ 
+ # See how we were called.
+ case "$1" in
+   start)
+         echo -n "Starting pulse: "
++        delay
+         daemon pulse $OPTIONS
+ 	RETVAL=$?
+         echo

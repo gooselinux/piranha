@@ -1,0 +1,58 @@
+diff --git a/Makefile b/Makefile
+index 512bfe9..717a27e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -188,7 +188,7 @@ install: 	all
+ 		# Web Installation.
+ 
+ 		ln -sf $(LIBDIR)/httpd/modules $(HADIR)/modules
+-		ln -sf /usr/sbin/httpd $(SBIN)/piranha_gui
++		$(INSTALL) -m 0755 piranha_gui $(SBIN)/piranha_gui
+ 		##touch $(HALOG)/piranha-gui
+ 		##touch $(HALOG)/piranha-gui-access
+ 
+diff --git a/piranha-gui.init b/piranha-gui.init
+index d8f31e8..5e9ac14 100755
+--- a/piranha-gui.init
++++ b/piranha-gui.init
+@@ -15,6 +15,8 @@
+ # pidfile: /var/log/piranha/piranha-httpd.pid
+ # config: /etc/sysconfig/ha/conf/httpd.conf
+ 
++PIDFILE=/var/log/piranha/piranha-httpd.pid
++
+ # Source function library.
+ . /etc/rc.d/init.d/functions
+ 
+@@ -26,7 +28,7 @@ if [ ${NETWORKING} = "no" ] ; then
+ 	exit 1
+ fi
+ 
+-# Make sure piranha-gui (symlink to apache httpd) is available
++# Make sure piranha-gui (script to run apache httpd) is available
+ if [ ! -f /usr/sbin/piranha_gui ] ; then
+ 	echo "/usr/sbin/piranha_gui symlink to httpd program is missing"
+ 	exit 5
+@@ -64,11 +66,11 @@ stop() {
+ #       fi
+ # old logic block
+ 
+-	killproc piranha_gui
++	killproc -p $PIDFILE
+         RETVAL=$?
+         #new logic block
+ 
+-        rm -f /var/log/piranha/piranha-httpd.pid
++        rm -f $PIDFILE
+ 	echo
+         [ $RETVAL = 0 ] && rm -f /var/lock/subsys/piranha-gui
+         return $RETVAL
+diff --git a/piranha_gui b/piranha_gui
+new file mode 100644
+index 0000000..b225a20
+--- /dev/null
++++ b/piranha_gui
+@@ -0,0 +1,3 @@
++#!/bin/sh
++
++/usr/sbin/httpd $@
